@@ -822,20 +822,23 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 				window.open(url, '_blank', 'noopener,noreferrer');
 				return;
 			}
-			const link = target.closest('a[href^="#"]');
+			const link = target.closest('a[href^="#"], a[href="/"]');
 			if (!(link instanceof HTMLAnchorElement)) return;
 			const href = link.getAttribute('href');
 			if (!href || href === '#') return;
 
-			const idx = indexForHash(href);
-			if (idx < 0) return;
+			let idx = 0;
+			if (href !== '/') {
+				idx = indexForHash(href);
+				if (idx < 0) return;
+			}
 
 			event.preventDefault();
-			if (workDepth() > 0 && href !== '#work') {
+			if (workDepth() > 0 && href !== '#work' && href !== '/') {
 				document.getElementById('work')?.dispatchEvent(new CustomEvent('work:close'));
 			}
 			goToIndex(idx);
-			history.replaceState(null, '', `/${href}`);
+			history.replaceState(null, '', href === '/' ? '/' : `/${href}`);
 		});
 
 		container.addEventListener('scroll', () => {
