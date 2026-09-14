@@ -4,7 +4,7 @@ backend:
   name: github
   repo: mauricioatencia/Portafolio
   branch: main
-  base_url: http://mauricioatencia.com
+  base_url: https://mauricioatencia.com
   auth_endpoint: api/auth
 
 media_folder: "/public/work"

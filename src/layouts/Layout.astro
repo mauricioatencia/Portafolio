@@ -18,7 +18,7 @@ const isHeroVideo = isVideoMedia(heroMedia);
 const aboutImage = aboutData.image || "";
 const logoImage = siteSettings.logo_image || "";
 const faviconSrc = (siteSettings as { favicon?: string }).favicon || "";
-const siteUrl = "http://mauricioatencia.com";
+const siteUrl = "https://mauricioatencia.com";
 // Las redes no reproducen el video del hero; usan esta imagen como su preview.
 const homePreviewImage = isHeroVideo
 	? getVideoPosterUrl(heroMedia) || `${siteUrl}/hero-poster.jpg`
