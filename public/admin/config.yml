@@ -4,7 +4,7 @@ backend:
   name: github
   repo: mauricioatencia/Portafolio
   branch: main
-  base_url: https://m-atencia.vercel.app
+  base_url: http://mauricioatencia.com
   auth_endpoint: api/auth
 
 media_folder: "/public/work"

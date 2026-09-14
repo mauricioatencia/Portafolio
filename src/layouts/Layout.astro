@@ -18,7 +18,7 @@ const isHeroVideo = isVideoMedia(heroMedia);
 const aboutImage = aboutData.image || "";
 const logoImage = siteSettings.logo_image || "";
 const faviconSrc = (siteSettings as { favicon?: string }).favicon || "";
-const siteUrl = "https://m-atencia.vercel.app";
+const siteUrl = "http://mauricioatencia.com";
 // Las redes no reproducen el video del hero; usan esta imagen como su preview.
 const homePreviewImage = isHeroVideo
 	? getVideoPosterUrl(heroMedia) || `${siteUrl}/hero-poster.jpg`
@@ -59,10 +59,7 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMedia);
 			property="og:description"
 			content="Portfolio de diseño gráfico de Mauricio Atencia — Branding, Social Media, Flyers y Merch."
 		/>
-		<meta
-			property="og:image"
-			content={homePreviewImage}
-		/>
+		<meta property="og:image" content={homePreviewImage} />
 		<meta property="og:image:type" content="image/jpeg" />
 		<meta property="og:image:width" content="1920" />
 		<meta property="og:image:height" content="1080" />
@@ -82,35 +79,35 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMedia);
 			rel="stylesheet"
 		/>
 		{
-				heroMedia && !isHeroVideo && (
+			heroMedia && !isHeroVideo && (
+				<link
+					rel="preload"
+					as="image"
+					href={deliveredHeroMedia}
+					fetchpriority="high"
+				/>
+			)
+		}
+		{
+			heroMedia && isHeroVideo && (
+				<>
 					<link
 						rel="preload"
 						as="image"
-						href={deliveredHeroMedia}
+						href={heroPoster}
+						media="(min-width: 701px)"
 						fetchpriority="high"
 					/>
-				)
-			}
-		{
-				heroMedia && isHeroVideo && (
-					<>
-						<link
-							rel="preload"
-							as="image"
-							href={heroPoster}
-							media="(min-width: 701px)"
-							fetchpriority="high"
-						/>
-						<link
-							rel="preload"
-							as="image"
-							href={mobileHeroPoster || heroPoster}
-							media="(max-width: 700px)"
-							fetchpriority="high"
-						/>
-					</>
-				)
-			}
+					<link
+						rel="preload"
+						as="image"
+						href={mobileHeroPoster || heroPoster}
+						media="(max-width: 700px)"
+						fetchpriority="high"
+					/>
+				</>
+			)
+		}
 		{
 			aboutImage && (
 				<link

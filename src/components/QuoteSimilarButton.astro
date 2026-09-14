@@ -13,7 +13,7 @@ export interface Props {
 const { projectName, color, slug, class: className } = Astro.props;
 const ink = readableInk(color);
 
-const projectUrl = slug ? `https://m-atencia.vercel.app/${slug}` : "";
+const projectUrl = slug ? `http://mauricioatencia.com/${slug}` : "";
 const message = projectUrl
 	? `Hola, me interesa cotizar un proyecto similar a ${projectName}. ${projectUrl}`
 	: `Hola, me interesa cotizar un proyecto similar a ${projectName}.`;

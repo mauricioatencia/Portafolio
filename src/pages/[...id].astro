@@ -1,37 +1,48 @@
 ---
-import { projectCategories } from '../data/projects';
-import type { Project, ProjectCategory } from '../data/projects';
-import { getVideoPosterUrl, isVideoMedia } from '../utils/media';
+import { projectCategories } from "../data/projects";
+import type { Project, ProjectCategory } from "../data/projects";
+import { getVideoPosterUrl, isVideoMedia } from "../utils/media";
 
 export function getStaticPaths() {
-	const paths: { params: { id: string }; props: { type: 'category' | 'project'; data: Project | ProjectCategory; slug: string } }[] = [];
+	const paths: {
+		params: { id: string };
+		props: {
+			type: "category" | "project";
+			data: Project | ProjectCategory;
+			slug: string;
+		};
+	}[] = [];
 
 	Object.entries(projectCategories).forEach(([categoryId, category]) => {
 		// Agrega la categoría con su slug público
 		paths.push({
 			params: { id: category.slug },
-			props: { type: 'category', data: category, slug: category.slug }
+			props: { type: "category", data: category, slug: category.slug },
 		});
 
 		// Compatibilidad con rutas antiguas como /category_1
 		if (category.slug !== categoryId) {
 			paths.push({
 				params: { id: categoryId },
-				props: { type: 'category', data: category, slug: category.slug }
+				props: {
+					type: "category",
+					data: category,
+					slug: category.slug,
+				},
 			});
 		}
 
 		// Agrega los proyectos de esta categoría
-		category.projects.forEach(project => {
+		category.projects.forEach((project) => {
 			paths.push({
 				params: { id: `${category.slug}/${project.slug}` },
-				props: { type: 'project', data: project, slug: project.slug }
+				props: { type: "project", data: project, slug: project.slug },
 			});
-			
+
 			// Compatibilidad con rutas antiguas sin categoría
 			paths.push({
 				params: { id: project.slug },
-				props: { type: 'project', data: project, slug: project.slug }
+				props: { type: "project", data: project, slug: project.slug },
 			});
 		});
 	});
@@ -40,19 +51,19 @@ export function getStaticPaths() {
 }
 
 interface Props {
-	type: 'category' | 'project';
+	type: "category" | "project";
 	data: Project | ProjectCategory;
 	slug: string;
 }
 
 const { type, data, slug } = Astro.props;
-const BASE_URL = 'https://m-atencia.vercel.app';
+const BASE_URL = "http://mauricioatencia.com";
 const redirectUrl = `/?route=${encodeURIComponent(slug)}`;
 // Note: We'll just pass the slug to route= which will be picked up by the index page
 
 let ogImage = `${BASE_URL}/LA-FICHA-LOGO.png`;
-let ogTitle = '';
-let ogDescription = '';
+let ogTitle = "";
+let ogDescription = "";
 
 function toAbsoluteUrl(source: string) {
 	return /^https?:\/\//i.test(source)
@@ -73,61 +84,73 @@ function projectOgImage(project: Project, generatedOgPath: string) {
 	return `${BASE_URL}${generatedOgPath}`;
 }
 
-if (type === 'project') {
+if (type === "project") {
 	const project = data as Project;
 	// generate-og.js genera las OG con nombre basado en el slug: /og/og-{slug}.jpg
-	const projectSlug = slug.split('/').pop() || slug;
+	const projectSlug = slug.split("/").pop() || slug;
 	const generatedOgPath = `/og/og-${projectSlug}.jpg`;
 	ogImage = projectOgImage(project, generatedOgPath);
 	ogTitle = project.name;
 	ogDescription = project.tagline
-		? project.tagline.replace(/\\n/g, ' ')
-		: `${project.name} — Proyecto de diseño por Mauricio Atencia${project.year ? ` (${project.year})` : ''}`;
+		? project.tagline.replace(/\\n/g, " ")
+		: `${project.name} — Proyecto de diseño por Mauricio Atencia${project.year ? ` (${project.year})` : ""}`;
 } else {
 	const category = data as ProjectCategory;
 	// Buscamos la primera imagen del primer proyecto que tenga imágenes
-	const firstProjectWithImage = category.projects.find(p => p.images && p.images.length > 0);
+	const firstProjectWithImage = category.projects.find(
+		(p) => p.images && p.images.length > 0,
+	);
 	ogImage = firstProjectWithImage
-		? projectOgImage(firstProjectWithImage, `/og/og-${firstProjectWithImage.slug}.jpg`)
+		? projectOgImage(
+				firstProjectWithImage,
+				`/og/og-${firstProjectWithImage.slug}.jpg`,
+			)
 		: ogImage;
 	ogTitle = (category as ProjectCategory).title;
 	ogDescription = `Proyectos de ${(category as ProjectCategory).title} — Mauricio Atencia`;
 }
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>{ogTitle}</title>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{ogTitle}</title>
 
-	<!-- Open Graph / WhatsApp / Facebook -->
-	<meta property="og:type" content="website" />
-	<meta property="og:url" content={`${BASE_URL}/${encodeURI(Astro.params.id)}`} />
-	<meta property="og:title" content={ogTitle} />
-	<meta property="og:description" content={ogDescription} />
-	<meta property="og:image" content={ogImage} />
-	<meta property="og:image:width" content="1200" />
-	<meta property="og:image:height" content="630" />
-	<meta property="og:site_name" content="Mauricio Atencia" />
-	<meta property="og:locale" content="es_CO" />
+		<!-- Open Graph / WhatsApp / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:url"
+			content={`${BASE_URL}/${encodeURI(Astro.params.id)}`}
+		/>
+		<meta property="og:title" content={ogTitle} />
+		<meta property="og:description" content={ogDescription} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:site_name" content="Mauricio Atencia" />
+		<meta property="og:locale" content="es_CO" />
 
-	<!-- Twitter / X -->
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content={ogTitle} />
-	<meta name="twitter:description" content={ogDescription} />
-	<meta name="twitter:image" content={ogImage} />
+		<!-- Twitter / X -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={ogTitle} />
+		<meta name="twitter:description" content={ogDescription} />
+		<meta name="twitter:image" content={ogImage} />
 
-	<!-- Canonical URL (no meta refresh — crawlers must read og:tags without being redirected) -->
-	<link rel="canonical" href={`${BASE_URL}/${encodeURI(Astro.params.id)}`} />
-</head>
-<body>
-	<p>
-		Redirigiendo a <a href={redirectUrl}>{ogTitle}</a>…
-	</p>
-	<script define:vars={{ redirectUrl }}>
-		// Instant JS redirect for browsers (faster than meta refresh)
-		window.location.replace(redirectUrl);
-	</script>
-</body>
+		<!-- Canonical URL (no meta refresh — crawlers must read og:tags without being redirected) -->
+		<link
+			rel="canonical"
+			href={`${BASE_URL}/${encodeURI(Astro.params.id)}`}
+		/>
+	</head>
+	<body>
+		<p>
+			Redirigiendo a <a href={redirectUrl}>{ogTitle}</a>…
+		</p>
+		<script define:vars={{ redirectUrl }}>
+			// Instant JS redirect for browsers (faster than meta refresh)
+			window.location.replace(redirectUrl);
+		</script>
+	</body>
 </html>
