@@ -2,7 +2,7 @@
 
 backend:
   name: github
-  repo: dyingbetrayed/portfolio-mauricio
+  repo: mauricioatencia/Portafolio
   branch: main
   base_url: https://m-atencia.vercel.app
   auth_endpoint: api/auth
