@@ -11,6 +11,8 @@ project: Project;
 
 const { project } = Astro.props;
 const images = project.images ?? [];
+// Los proyectos existentes no tienen este campo; se conserva el botón visible en ellos.
+const showQuoteButton = project.show_quote_button !== false;
 ---
 
 <article
@@ -54,12 +56,14 @@ decoding="async"
 </div>
 
 <div class="project-image__footer">
+{showQuoteButton && (
 <QuoteSimilarButton
 projectName={project.name}
 color={project.color}
 slug={project.slug}
 class="project-image__quote"
 />
+)}
 <button
 type="button"
 class="project-image__scroll-hint"

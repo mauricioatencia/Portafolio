@@ -16,6 +16,8 @@ export interface Project {
 	/** Frase corta bajo el título. Usa \n para forzar el salto de línea. */
 	tagline?: string;
 	services?: string[];
+	/** Controla si se muestra el CTA de WhatsApp en la galería del proyecto. */
+	show_quote_button?: boolean;
 	sections?: ProjectSection[];
 	/** Nota legal al pie de la página */
 	note?: string;

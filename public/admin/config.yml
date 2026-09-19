@@ -113,6 +113,7 @@ collections:
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
       - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
+      - { label: "Mostrar botón \"Cotizar uno similar\"", name: "show_quote_button", widget: "boolean", default: true, hint: "Desactívalo para ocultar el botón de WhatsApp en este proyecto." }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
@@ -153,6 +154,7 @@ collections:
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
       - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
+      - { label: "Mostrar botón \"Cotizar uno similar\"", name: "show_quote_button", widget: "boolean", default: true, hint: "Desactívalo para ocultar el botón de WhatsApp en este proyecto." }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
@@ -193,6 +195,7 @@ collections:
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
       - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
+      - { label: "Mostrar botón \"Cotizar uno similar\"", name: "show_quote_button", widget: "boolean", default: true, hint: "Desactívalo para ocultar el botón de WhatsApp en este proyecto." }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
@@ -233,6 +236,7 @@ collections:
       - { label: "Color", name: "color", widget: "color" }
       - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
       - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
+      - { label: "Mostrar botón \"Cotizar uno similar\"", name: "show_quote_button", widget: "boolean", default: true, hint: "Desactívalo para ocultar el botón de WhatsApp en este proyecto." }
       - label: "Descripción del proyecto"
         name: "sections"
         widget: "list"
