@@ -45,6 +45,7 @@ import categoriesData from '../content/categories.json';
 import ikeneasData from '../content/ikeneas.json';
 
 export const ikeneasCategoryId = 'category_ikeneas';
+export const ikeneasWorkName = ikeneasData.work_name || ikeneasData.name || 'Ikeneas';
 
 const allProjectFiles = import.meta.glob('../content/projects/*.json', { eager: true });
 
@@ -133,8 +134,8 @@ export const projectCategories: Record<string, ProjectCategory> = {
 	...(ikeneasData.work_display === 'category'
 		? {
 			[ikeneasCategoryId]: {
-				title: ikeneasData.name || 'IKENEAS',
-				slug: slugify(ikeneasData.name || 'IKENEAS'),
+				title: ikeneasWorkName,
+				slug: slugify(ikeneasWorkName),
 				hoverColor: ikeneasData.hover_color || '#6c48b0',
 				projects: ikeneasProjects
 			}

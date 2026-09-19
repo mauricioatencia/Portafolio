@@ -13,13 +13,14 @@ interface Props {
 }
 
 const { theme = 'light', active, showLogo = false } = Astro.props;
+const ikeneasMenuName = ikeneasData.menu_name || ikeneasData.name || 'Ikeneas';
 
 const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 	{ id: 'about', label: 'About' },
 	{ id: 'work', label: 'Work' },
 	// Los sitios existentes no tienen este campo; el enlace se conserva visible.
 	...(ikeneasData.show_in_navigation !== false
-		? [{ id: 'ikeneas' as const, label: ikeneasData.name, externalUrl: ikeneasData.url }]
+		? [{ id: 'ikeneas' as const, label: ikeneasMenuName, externalUrl: ikeneasData.url }]
 		: []),
 	{ id: 'contact', label: 'Contact' },
 ];

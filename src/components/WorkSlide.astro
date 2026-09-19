@@ -4,7 +4,7 @@ import ProjectDetail from './ProjectDetail.astro';
 import ProjectImage from './ProjectImage.astro';
 import ProjectNext from './ProjectNext.astro';
 import SiteBrand from './SiteBrand.astro';
-import { projectCategories, type ProjectCategory } from '../data/projects';
+import { ikeneasWorkName, projectCategories, type ProjectCategory } from '../data/projects';
 import ikeneasData from '../content/ikeneas.json';
 
 const tableCategories = Object.entries(projectCategories) as Array<[string, ProjectCategory]>;
@@ -79,7 +79,7 @@ const ikeneasCategory = projectCategories.category_ikeneas;
 					data-cursor-nav
 					style={`--work-hover-bg: ${ikeneasData.hover_color};`}
 				>
-					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">{ikeneasData.name.toUpperCase()}</span>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">{ikeneasWorkName.toUpperCase()}</span>
 				</button>
 			)}
 		</div>

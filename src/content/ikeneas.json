@@ -1,5 +1,7 @@
 {
   "name": "Ikeneas",
+  "menu_name": "Ikeneas",
+  "work_name": "Ikeneas",
   "url": "https://ikeneas.com/",
   "hover_color": "#6c48b0",
   "show_in_navigation": true,

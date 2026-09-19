@@ -41,7 +41,8 @@ collections:
         name: "ikeneas"
         file: "src/content/ikeneas.json"
         fields:
-          - { label: "Nombre", name: "name", widget: "string", default: "Ikeneas" }
+          - { label: "Nombre en el menú principal", name: "menu_name", widget: "string", default: "Ikeneas", hint: "Texto que aparece en el menú superior y móvil." }
+          - { label: "Nombre en Work", name: "work_name", widget: "string", default: "Ikeneas", hint: "Texto que aparece en el bloque de Ikeneas dentro de Work y, si se usa, en su categoría." }
           - { label: "URL externa", name: "url", widget: "string", default: "https://ikeneas.com/" }
           - { label: "Color hover", name: "hover_color", widget: "color", default: "#6c48b0" }
           - { label: "Mostrar Ikeneas en el menú principal", name: "show_in_navigation", widget: "boolean", default: true, hint: "Desactívalo para ocultar el enlace Ikeneas del menú superior y móvil." }

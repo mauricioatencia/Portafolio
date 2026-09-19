@@ -342,7 +342,7 @@ const hasCloudinaryConfiguration = Boolean(cloudinary.cloudName && cloudinary.ap
         { label: categories.category_2_title || 'Categoría 2', value: 'category_2' },
         { label: categories.category_3_title || 'Categoría 3', value: 'category_3' },
         { label: categories.category_4_title || 'Categoría 4', value: 'category_4' },
-        { label: ikeneas.name || 'Ikeneas', value: 'category_ikeneas' }
+        { label: ikeneas.work_name || ikeneas.name || 'Ikeneas', value: 'category_ikeneas' }
       ];
 
       config.collections.forEach(collection => {
@@ -355,7 +355,7 @@ const hasCloudinaryConfiguration = Boolean(cloudinary.cloudName && cloudinary.ap
         } else if (collection.name === 'projects_category_4') {
           collection.label = categories.category_4_title || 'Categoría 4';
 		} else if (collection.name === 'projects_category_ikeneas') {
-		  collection.label = ikeneas.name || 'Ikeneas';
+		  collection.label = ikeneas.work_name || ikeneas.name || 'Ikeneas';
         }
 
         if (collection.name.startsWith('projects_category_')) {
