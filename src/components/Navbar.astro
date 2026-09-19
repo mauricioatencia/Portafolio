@@ -17,7 +17,10 @@ const { theme = 'light', active, showLogo = false } = Astro.props;
 const links: { id: NavSection; label: string; externalUrl?: string }[] = [
 	{ id: 'about', label: 'About' },
 	{ id: 'work', label: 'Work' },
-	{ id: 'ikeneas', label: ikeneasData.name, externalUrl: ikeneasData.url },
+	// Los sitios existentes no tienen este campo; el enlace se conserva visible.
+	...(ikeneasData.show_in_navigation !== false
+		? [{ id: 'ikeneas' as const, label: ikeneasData.name, externalUrl: ikeneasData.url }]
+		: []),
 	{ id: 'contact', label: 'Contact' },
 ];
 ---

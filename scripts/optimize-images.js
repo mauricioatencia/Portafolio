@@ -52,6 +52,8 @@ const categorySlugMap = {
   category_2: slugify(categoriesData.category_2_title || 'category-2'),
   category_3: slugify(categoriesData.category_3_title || 'category-3'),
   category_4: slugify(categoriesData.category_4_title || 'category-4'),
+  // Debe coincidir con la carpeta configurada para la colección Ikeneas.
+  category_ikeneas: 'ikeneas',
 };
 
 // Resultado: { category_1: 'branding', category_2: 'art-direction', ... }

@@ -22,6 +22,8 @@ const categoryMap = {
   'category_2': slugify(categoriesData.category_2_title || 'category-2'),
   'category_3': slugify(categoriesData.category_3_title || 'category-3'),
   'category_4': slugify(categoriesData.category_4_title || 'category-4'),
+  // Carpeta estable para los proyectos de la categoría opcional Ikeneas.
+  'category_ikeneas': 'ikeneas',
 };
 
 console.log('📂 Category mapping:', categoryMap);

@@ -7,14 +7,10 @@ import SiteBrand from './SiteBrand.astro';
 import { projectCategories, type ProjectCategory } from '../data/projects';
 import ikeneasData from '../content/ikeneas.json';
 
-const tableCategories: Array<[string, ProjectCategory]> = [
-	['category_1', projectCategories.category_1],
-	['category_2', projectCategories.category_2],
-	['category_3', projectCategories.category_3],
-	['category_4', projectCategories.category_4],
-];
+const tableCategories = Object.entries(projectCategories) as Array<[string, ProjectCategory]>;
 const allProjects = Object.values(projectCategories).flatMap((group) => group.projects);
 const projectsWithImages = allProjects.filter((project) => project.images?.length);
+const ikeneasCategory = projectCategories.category_ikeneas;
 ---
 
 <section id="work" class="work-slide" data-depth="0">
@@ -65,15 +61,27 @@ const projectsWithImages = allProjects.filter((project) => project.images?.lengt
 				</button>
 			</div>
 
-			<button
-				type="button"
-				class="work-link hover-ikeneas work-row work-row--gray work-row--branding"
-				data-external-url={ikeneasData.url}
-				data-cursor-nav
-				style={`--work-hover-bg: ${ikeneasData.hover_color};`}
-			>
-				<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">{ikeneasData.name.toUpperCase()}</span>
-			</button>
+			{ikeneasCategory ? (
+				<button
+					type="button"
+					class="work-link hover-ikeneas work-row work-row--gray work-row--branding"
+					data-open-category={ikeneasCategory.slug}
+					data-cursor-nav
+					style={`--work-hover-bg: ${ikeneasCategory.hoverColor};`}
+				>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">{ikeneasCategory.title.toUpperCase()}</span>
+				</button>
+			) : (
+				<button
+					type="button"
+					class="work-link hover-ikeneas work-row work-row--gray work-row--branding"
+					data-external-url={ikeneasData.url}
+					data-cursor-nav
+					style={`--work-hover-bg: ${ikeneasData.hover_color};`}
+				>
+					<span class="work-txt work-txt--xl work-txt--branding work-txt--dark" style="--work-reveal-delay: 340ms;">{ikeneasData.name.toUpperCase()}</span>
+				</button>
+			)}
 		</div>
 
 		<div class="work-nav">

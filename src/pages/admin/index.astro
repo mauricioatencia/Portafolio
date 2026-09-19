@@ -1,5 +1,6 @@
 ---
 import categories from '../../content/categories.json';
+import ikeneas from '../../content/ikeneas.json';
 
 const cloudinary = {
 	cloudName: import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME?.trim() || '',
@@ -91,7 +92,7 @@ const hasCloudinaryConfiguration = Boolean(cloudinary.cloudName && cloudinary.ap
     <div class="progress-text" id="compress-progress"></div>
   </div>
 
-  <script define:vars={{ categories, cloudinary }}>
+  <script define:vars={{ categories, ikeneas, cloudinary }}>
     // ─── IMAGE COMPRESSION ENGINE ───────────────────────────────────
     // Compresses images to WebP BEFORE Sveltia CMS sends them to GitHub.
     // This prevents "Failed to fetch" errors caused by large files.
@@ -340,7 +341,8 @@ const hasCloudinaryConfiguration = Boolean(cloudinary.cloudName && cloudinary.ap
         { label: categories.category_1_title || 'Categoría 1', value: 'category_1' },
         { label: categories.category_2_title || 'Categoría 2', value: 'category_2' },
         { label: categories.category_3_title || 'Categoría 3', value: 'category_3' },
-        { label: categories.category_4_title || 'Categoría 4', value: 'category_4' }
+        { label: categories.category_4_title || 'Categoría 4', value: 'category_4' },
+        { label: ikeneas.name || 'Ikeneas', value: 'category_ikeneas' }
       ];
 
       config.collections.forEach(collection => {
@@ -352,6 +354,8 @@ const hasCloudinaryConfiguration = Boolean(cloudinary.cloudName && cloudinary.ap
           collection.label = categories.category_3_title || 'Categoría 3';
         } else if (collection.name === 'projects_category_4') {
           collection.label = categories.category_4_title || 'Categoría 4';
+		} else if (collection.name === 'projects_category_ikeneas') {
+		  collection.label = ikeneas.name || 'Ikeneas';
         }
 
         if (collection.name.startsWith('projects_category_')) {

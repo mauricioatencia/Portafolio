@@ -42,6 +42,9 @@ export interface ProjectCategory {
 }
 
 import categoriesData from '../content/categories.json';
+import ikeneasData from '../content/ikeneas.json';
+
+export const ikeneasCategoryId = 'category_ikeneas';
 
 const allProjectFiles = import.meta.glob('../content/projects/*.json', { eager: true });
 
@@ -88,14 +91,16 @@ const category4Projects = allProjectsRaw.filter(p => p.category === 'category_4'
 	...project,
 	id: String(index + 1).padStart(2, '0')
 }));
-
-const allProjects = [...category1Projects, ...category2Projects, ...category3Projects, ...category4Projects];
+const ikeneasProjects = allProjectsRaw.filter(p => p.category === ikeneasCategoryId).map((project, index) => ({
+	...project,
+	id: String(index + 1).padStart(2, '0')
+}));
 
 function slugify(text: string) {
 	return text.toString().toLowerCase().trim().replace(/[\s\W-]+/g, '-');
 }
 
-export const projectCategories: Record<string, ProjectCategory> = {
+const baseProjectCategories: Record<string, ProjectCategory> = {
 	category_1: {
 		title: categoriesData.category_1_title || 'CATEGORÍA 1',
 		slug: slugify(categoriesData.category_1_title || 'CATEGORÍA 1'),
@@ -120,6 +125,21 @@ export const projectCategories: Record<string, ProjectCategory> = {
 		hoverColor: categoriesData.category_4_hover_color || '#ab9900',
 		projects: category4Projects
 	}
+};
+
+// Ikeneas puede ser una categoría de Work o permanecer como enlace externo.
+export const projectCategories: Record<string, ProjectCategory> = {
+	...baseProjectCategories,
+	...(ikeneasData.work_display === 'category'
+		? {
+			[ikeneasCategoryId]: {
+				title: ikeneasData.name || 'IKENEAS',
+				slug: slugify(ikeneasData.name || 'IKENEAS'),
+				hoverColor: ikeneasData.hover_color || '#6c48b0',
+				projects: ikeneasProjects
+			}
+		}
+		: {})
 };
 
 export function getCategory(category: string): ProjectCategory | undefined {

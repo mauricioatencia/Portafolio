@@ -44,6 +44,15 @@ collections:
           - { label: "Nombre", name: "name", widget: "string", default: "Ikeneas" }
           - { label: "URL externa", name: "url", widget: "string", default: "https://ikeneas.com/" }
           - { label: "Color hover", name: "hover_color", widget: "color", default: "#6c48b0" }
+          - { label: "Mostrar Ikeneas en el menú principal", name: "show_in_navigation", widget: "boolean", default: true, hint: "Desactívalo para ocultar el enlace Ikeneas del menú superior y móvil." }
+          - label: "Apariencia de Ikeneas en Work"
+            name: "work_display"
+            widget: "select"
+            default: "external_link"
+            options:
+              - { label: "Enlace a la web externa", value: "external_link" }
+              - { label: "Categoría propia de proyectos", value: "category" }
+            hint: "Como categoría, el bloque Ikeneas abre la lista de proyectos que asignes a Ikeneas. Como enlace, abre la URL externa."
 
   - name: "home_collection"
     label: "Inicio (Hero)"
@@ -229,6 +238,47 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4"], default: "category_4" }
+      - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
+      - { label: "Nombre del proyecto", name: "name", widget: "string" }
+      - { label: "Fecha del proyecto", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, hint: "Elige la fecha exacta — el orden de los proyectos se basa en esta fecha (más reciente = primero)." }
+      - { label: "Ciudad del proyecto", name: "location", widget: "string" }
+      - { label: "Color", name: "color", widget: "color" }
+      - { label: "Frase corta del proyecto", name: "tagline", widget: "text", required: false }
+      - { label: "Tagline del proyecto", name: "services", widget: "string", required: false, hint: "Escribe los servicios separados por coma. Ej: Branding, Naming, Identidad" }
+      - { label: "Mostrar botón \"Cotizar uno similar\"", name: "show_quote_button", widget: "boolean", default: true, hint: "Desactívalo para ocultar el botón de WhatsApp en este proyecto." }
+      - label: "Descripción del proyecto"
+        name: "sections"
+        widget: "list"
+        required: false
+        collapsed: false
+        minimize_collapsed: false
+        fields:
+          - { label: "Título", name: "label", widget: "string" }
+          - { label: "Párrafos", name: "paragraphs", widget: "text", hint: "Escribe todo el texto aquí. Separa los párrafos con una línea en blanco.", required: false }
+      - { label: "Derechos reservados", name: "note", widget: "string", required: false }
+      - label: "Cargar medios"
+        name: "images"
+        widget: "file"
+        multiple: true
+        required: false
+        accept: "image/*,video/mp4,video/webm,video/quicktime"
+        hint: "Imágenes: usa Recursos para comprimirlas y guardarlas en el proyecto. Videos: usa Cloudinary; se optimizan y generan póster automáticamente."
+
+  - name: "projects_category_ikeneas"
+    label: "Proyectos Ikeneas"
+    folder: "src/content/projects"
+    media_folder: "/public/work/ikeneas"
+    public_folder: "/work/ikeneas"
+    create: true
+    filter:
+      field: category
+      value: "category_ikeneas"
+    extension: "json"
+    format: "json"
+    identifier_field: "name"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Categoría", name: "category", widget: "select", options: ["category_1", "category_2", "category_3", "category_4", "category_ikeneas"], default: "category_ikeneas" }
       - { label: "ID (automático)", name: "id", widget: "hidden", default: "" }
       - { label: "Nombre del proyecto", name: "name", widget: "string" }
       - { label: "Fecha del proyecto", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, hint: "Elige la fecha exacta — el orden de los proyectos se basa en esta fecha (más reciente = primero)." }
