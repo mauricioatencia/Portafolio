@@ -1,16 +1,23 @@
 {
-  "category": "category_4",
+  "category": "category_ikeneas",
   "id": "",
   "name": "prueba",
   "date": "2026-09-19",
-  "location": "ddfdf",
-  "color": "#796767",
-  "tagline": "sdfsf",
+  "location": "sdfdsf",
+  "color": "#290f0f",
+  "tagline": "sdfsdfsf",
   "services": "",
-  "show_quote_button": false,
+  "show_quote_button": true,
   "sections": [],
   "note": "",
   "images": [
-    "/work/hybrid/307130_medium.mp4"
+    "https://picsum.photos/id/201/1920/1280.webp",
+    "https://picsum.photos/id/310/1920/1280.webp",
+    "https://picsum.photos/id/292/1920/1280.webp",
+    "https://picsum.photos/id/171/1920/1280.webp",
+    "https://picsum.photos/id/166/1920/1280.webp",
+    "https://picsum.photos/id/237/1920/1280.webp",
+    "https://picsum.photos/id/238/1920/1280.webp",
+    "https://picsum.photos/id/177/1920/1280.webp"
   ]
 }
