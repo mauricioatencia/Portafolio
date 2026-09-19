@@ -11,6 +11,7 @@ const tableCategories = Object.entries(projectCategories) as Array<[string, Proj
 const allProjects = Object.values(projectCategories).flatMap((group) => group.projects);
 const projectsWithImages = allProjects.filter((project) => project.images?.length);
 const ikeneasCategory = projectCategories.category_ikeneas;
+const ikeneasWorkUrl = ikeneasData.work_url || ikeneasData.url;
 ---
 
 <section id="work" class="work-slide" data-depth="0">
@@ -75,7 +76,7 @@ const ikeneasCategory = projectCategories.category_ikeneas;
 				<button
 					type="button"
 					class="work-link hover-ikeneas work-row work-row--gray work-row--branding"
-					data-external-url={ikeneasData.url}
+					data-external-url={ikeneasWorkUrl}
 					data-cursor-nav
 					style={`--work-hover-bg: ${ikeneasData.hover_color};`}
 				>
