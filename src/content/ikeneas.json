@@ -3,5 +3,5 @@
   "url": "https://ikeneas.com/",
   "hover_color": "#6c48b0",
   "show_in_navigation": false,
-  "work_display": "external_link"
+  "work_display": "category"
 }
