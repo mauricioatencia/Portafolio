@@ -1,11 +1,11 @@
 {
-  "name": "Ikeneas",
   "menu_name": "Ikeneas",
   "work_name": "Ikeneas",
   "url": "https://ikeneas.com/",
   "menu_url": "https://ikeneas.com/",
   "work_url": "https://ikeneas.com/",
   "hover_color": "#6c48b0",
-  "show_in_navigation": false,
-  "work_display": "external_link"
+  "show_in_navigation": true,
+  "work_display": "external_link",
+  "name": "Ikeneas"
 }
