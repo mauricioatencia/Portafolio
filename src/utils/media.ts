@@ -53,7 +53,10 @@ export function getMediaDeliveryUrl(source: string): string {
 	if (resourceType === 'video') {
 		return cloudinaryUrlWithTransformation(
 			source,
-			'c_limit,w_1920,h_1080/f_auto:video/q_auto:good',
+			// f_auto entrega HEVC a Safari. Aunque es eficiente, no todos los
+			// dispositivos iOS que aún se usan pueden decodificarlo. Un MP4 H.264
+			// Baseline 4.1 conserva la reproducción inline y el autoplay en Safari.
+			'c_limit,w_1920,h_1080/f_mp4,vc_h264:baseline:4.1/q_auto:good',
 		);
 	}
 
@@ -78,7 +81,23 @@ export function getMobileHeroVideoUrl(source: string): string {
 
 	return cloudinaryUrlWithTransformation(
 		source,
-		'c_fill,g_center,ar_9:16,w_720/f_auto:video/q_auto:eco',
+		// 720 × 1280 ocupa la misma cantidad de macrobloques que 1280 × 720.
+		// Baseline 3.1 es la representación H.264 que Apple garantiza desde los
+		// iPhone/iPad más antiguos; 4.1 no lo es aunque el perfil sea Baseline.
+		'c_fill,g_center,ar_9:16,w_720/f_mp4,vc_h264:baseline:3.1/q_auto:eco',
+	);
+}
+
+/**
+ * A 720p landscape source for touch tablets. It prevents iPads from selecting
+ * the 1080p/Level 4.1 desktop rendition while preserving a landscape crop.
+ */
+export function getTouchHeroVideoUrl(source: string): string {
+	if (cloudinaryResourceType(source) !== 'video') return '';
+
+	return cloudinaryUrlWithTransformation(
+		source,
+		'c_limit,w_1280,h_720/f_mp4,vc_h264:baseline:3.1/q_auto:good',
 	);
 }
 

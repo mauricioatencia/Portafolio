@@ -7,8 +7,8 @@ import ContactSection from '../components/ContactSection.astro';
 import homeData from '../content/home.json';
 import {
 	getMediaDeliveryUrl,
-	getMobileHeroPosterUrl,
 	getMobileHeroVideoUrl,
+	getTouchHeroVideoUrl,
 	getVideoPosterUrl,
 	isVideoMedia,
 } from '../utils/media';
@@ -26,7 +26,7 @@ const mobileHeroMediaSource =
 const mobileHeroMedia = mobileHeroMediaSource
 	? getMediaDeliveryUrl(mobileHeroMediaSource)
 	: getMobileHeroVideoUrl(heroMediaSource);
-const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
+const touchHeroMedia = getTouchHeroVideoUrl(heroMediaSource);
 ---
 
 <Layout>
@@ -41,13 +41,26 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 						loop
 						playsinline
 						webkit-playsinline
-						preload="none"
-						data-src-desktop={heroMedia}
-						data-src-mobile={mobileHeroMedia || undefined}
-						data-poster-desktop={heroPoster}
-						data-poster-mobile={mobileHeroPoster || undefined}
+						preload="metadata"
+						poster={heroPoster}
 						disablePictureInPicture
-					></video>
+					>
+						{mobileHeroMedia && (
+							<source
+								src={mobileHeroMedia}
+								media="(max-width: 700px)"
+								type="video/mp4"
+							/>
+						)}
+						{touchHeroMedia && (
+							<source
+								src={touchHeroMedia}
+								media="(hover: none) and (pointer: coarse) and (min-width: 701px)"
+								type="video/mp4"
+							/>
+						)}
+						<source src={heroMedia} type="video/mp4" />
+					</video>
 				) : (
 					heroMedia && (
 						<img
@@ -60,6 +73,11 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 					)
 				)}
 			</div>
+			{isVideo && (
+				<button type="button" class="hero-video-fallback" hidden>
+					Reproducir video
+				</button>
+			)}
 			<div class="overlay"></div>
 			<header class="slide-header hero-header reveal" style="--reveal-delay: 80ms">
 				<Navbar theme="light" />
@@ -92,90 +110,6 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 		<ContactSection />
 	</main>
 </Layout>
-
-<script is:inline>
-	// Elige la fuente mobile/desktop ANTES de iniciar cualquier descarga. Así un
-	// teléfono no llega a pedir ni siquiera los metadatos del video desktop.
-	// En iOS, cada video.load() posterior a un play() exitoso puede tirar
-	// abajo la reproducción y sacarla de la ventana en la que Safari permite
-	// autoplay sin gesto del usuario, dejando el video pausado hasta un tap.
-	(function() {
-		function isMobileViewport() {
-			return window.matchMedia('(max-width: 700px)').matches;
-		}
-
-		function tryPlay(video) {
-			const playPromise = video.play();
-			if (playPromise !== undefined) {
-				playPromise.catch(() => {
-					// Bloqueado (gesto requerido, Modo de bajo consumo, etc.):
-					// se reintenta una sola vez en la primera interacción, más abajo.
-				});
-			}
-		}
-
-		function prepareVideo(video) {
-			const mobile = isMobileViewport();
-			const source = (mobile ? video.dataset.srcMobile : video.dataset.srcDesktop)
-				|| video.dataset.srcDesktop;
-			const poster = (mobile ? video.dataset.posterMobile : video.dataset.posterDesktop)
-				|| video.dataset.posterDesktop;
-
-			if (!source) return;
-			if (poster) video.poster = poster;
-
-			video.muted = true;
-			video.defaultMuted = true;
-			video.setAttribute('muted', '');
-			video.setAttribute('playsinline', '');
-			video.setAttribute('webkit-playsinline', '');
-
-			// src no existe en el HTML para que el navegador no haga una solicitud
-			// anticipada al archivo de escritorio antes de conocer el viewport.
-			video.src = source;
-			video.load();
-
-			const play = () => {
-				video.play().catch(() => {
-					// Safari puede bloquear autoplay por configuración.
-				});
-			};
-
-			if (video.readyState >= 2) {
-				play();
-			} else {
-				video.addEventListener('canplay', play, { once: true });
-			}
-		}
-
-		function init() {
-			document.querySelectorAll('.hero-video').forEach((video) => {
-				if (video instanceof HTMLVideoElement) prepareVideo(video);
-			});
-		}
-
-		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', init);
-		} else {
-			init();
-		}
-
-		// Único reintento, en la primera interacción, solo para los videos
-		// que hayan quedado pausados (Modo de bajo consumo bloquea el
-		// autoplay por completo en iOS y solo se levanta con un gesto).
-		const retryOnInteraction = () => {
-			document.querySelectorAll('.hero-video').forEach((video) => {
-				if (video instanceof HTMLVideoElement && video.paused) {
-					video.muted = true;
-					tryPlay(video);
-				}
-			});
-		};
-		['touchstart', 'click', 'scroll'].forEach((evt) => {
-			document.addEventListener(evt, retryOnInteraction, { once: true, passive: true });
-		});
-	})();
-</script>
 
 <script>
 	// @ts-nocheck
@@ -235,6 +169,84 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 			return best;
 		}
 
+		function heroVideoFallback(video) {
+			const slide = video.closest('.hero-slide');
+			return slide?.querySelector('.hero-video-fallback');
+		}
+
+		function hideHeroVideoFallback(video) {
+			const fallback = heroVideoFallback(video);
+			if (fallback instanceof HTMLButtonElement) fallback.hidden = true;
+		}
+
+		function showHeroVideoFallback(video) {
+			const fallback = heroVideoFallback(video);
+			if (fallback instanceof HTMLButtonElement) fallback.hidden = false;
+		}
+
+		function playMutedVideo(video) {
+			// Safari evalúa estas propiedades al momento de play(), no solo al
+			// construir el elemento. Las reafirmamos antes de cada reanudación.
+			video.muted = true;
+			video.defaultMuted = true;
+			video.playsInline = true;
+			const playPromise = video.play();
+			if (playPromise !== undefined) {
+				playPromise
+					.then(() => hideHeroVideoFallback(video))
+					.catch((error) => {
+						// pause() al salir del slide cancela play() con AbortError. No es
+						// un bloqueo que deba mostrar un control sobre otro slide.
+						if (error?.name !== 'AbortError' && video.closest('.hero-slide')?.classList.contains('is-active')) {
+							showHeroVideoFallback(video);
+						}
+					});
+			}
+		}
+
+		function playHeroAfterReveal(slide) {
+			const video = slide.querySelector('.hero-video');
+			const media = slide.querySelector('.hero-media');
+			if (!(video instanceof HTMLVideoElement) || !(media instanceof HTMLElement)) return;
+
+			let completed = false;
+			let timer = 0;
+			const playOnce = () => {
+				if (completed) return;
+				completed = true;
+				window.clearTimeout(timer);
+				media.removeEventListener('transitionend', onTransitionEnd);
+
+				if (!slide.classList.contains('is-active') || !video.paused) return;
+				// La segunda pintura garantiza que el clip-path ya dejó de ocultar
+				// el video. iOS bloquea autoplay para medios sin píxeles visibles.
+				window.requestAnimationFrame(() => {
+					window.requestAnimationFrame(() => {
+						if (slide.classList.contains('is-active') && video.paused) {
+							playMutedVideo(video);
+						}
+					});
+				});
+			};
+			const onTransitionEnd = (event) => {
+				if (event.target === media && event.propertyName.includes('clip')) playOnce();
+			};
+
+			const hasRevealTransition = getComputedStyle(media)
+				.transitionDuration
+				.split(',')
+				.some((duration) => Number.parseFloat(duration) > 0);
+			if (!hasRevealTransition || prefersReducedMotion) {
+				playOnce();
+				return;
+			}
+
+			media.addEventListener('transitionend', onTransitionEnd);
+			// transitionend no se emite si Safari interrumpe una animación al
+			// cambiar de pestaña; el timeout evita dejar el video pausado.
+			timer = window.setTimeout(playOnce, 1400);
+		}
+
 		function setActiveSlide(index) {
 			slides().forEach((slide, i) => {
 				const on = i === index;
@@ -244,15 +256,11 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 				if (on) slide.setAttribute('data-active', '');
 				else slide.removeAttribute('data-active');
 				
-				// Reproducir video cuando el slide se activa. Sin video.load():
-				// ya se preparó en el script is:inline, y volver a cargarlo acá
-				// puede interrumpir una reproducción que ya estaba andando.
+				// La fuente está declarada en el HTML y nunca se vuelve a cargar. El
+				// play programático espera al final de la animación de revelado: iOS
+				// rechaza el autoplay si el video sigue completamente recortado.
 				if (on) {
-					const video = slide.querySelector('.hero-video');
-					if (video instanceof HTMLVideoElement && video.paused) {
-						video.muted = true;
-						video.play().catch(() => {});
-					}
+					playHeroAfterReveal(slide);
 				} else {
 					// Pausar video cuando el slide se desactiva
 					const video = slide.querySelector('.hero-video');
@@ -908,6 +916,35 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 			});
 		}
 
+		// Si el usuario llega con Modo de bajo consumo o una política de Safari
+		// que rechazó el autoplay, este play ocurre dentro de su primer gesto.
+		const resumeHeroFromGesture = () => {
+			const video = container.querySelector('.hero-slide.is-active .hero-video');
+			if (video instanceof HTMLVideoElement && video.paused) playMutedVideo(video);
+		};
+		document.addEventListener('pointerdown', resumeHeroFromGesture, { once: true, passive: true });
+		document.addEventListener('touchend', resumeHeroFromGesture, { once: true, passive: true });
+		document.addEventListener('keydown', resumeHeroFromGesture, { once: true });
+
+		container.querySelectorAll('.hero-video').forEach((video) => {
+			if (!(video instanceof HTMLVideoElement)) return;
+			video.addEventListener('play', () => hideHeroVideoFallback(video));
+			video.addEventListener('error', () => {
+				if (video.closest('.hero-slide')?.classList.contains('is-active')) {
+					showHeroVideoFallback(video);
+				}
+			});
+
+			const fallback = heroVideoFallback(video);
+			fallback?.addEventListener('click', () => playMutedVideo(video));
+		});
+
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState !== 'visible') return;
+			const activeSlide = container.querySelector('.hero-slide.is-active');
+			if (activeSlide) playHeroAfterReveal(activeSlide);
+		});
+
 	}
 </script>
 
@@ -1035,6 +1072,15 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 		clip-path: inset(0 0 0 0);
 	}
 
+	/* Safari solo permite autoplay cuando el video es visible. En pantallas
+	   táctiles no retrasamos la visibilidad del hero con la máscara de entrada. */
+	@media (hover: none) and (pointer: coarse) {
+		.hero-media {
+			clip-path: none;
+			transition: none;
+		}
+	}
+
 	.hero-slide .overlay {
 		position: absolute;
 		top: 0;
@@ -1046,6 +1092,27 @@ const mobileHeroPoster = getMobileHeroPosterUrl(heroMediaSource) || heroPoster;
 		pointer-events: none;
 		opacity: var(--overlay-opacity, 0.25);
 		transition: opacity var(--dur-slow) var(--ease-out) 90ms;
+	}
+
+	.hero-video-fallback {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		z-index: 3;
+		transform: translate(-50%, -50%);
+		padding: 0.72rem 1.1rem;
+		border: 1px solid rgba(255, 255, 255, 0.9);
+		border-radius: 999px;
+		background: rgba(5, 5, 5, 0.7);
+		color: #fff;
+		font: 600 0.8rem/1 var(--font-nav);
+		letter-spacing: 0.04em;
+		cursor: pointer;
+	}
+
+	.hero-video-fallback:focus-visible {
+		outline: 2px solid #fff;
+		outline-offset: 4px;
 	}
 
 	.hero-slide.is-active .overlay {
